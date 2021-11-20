@@ -2,9 +2,8 @@ package dev.jdtech.jellyfin.api
 
 import android.content.Context
 import dev.jdtech.jellyfin.BuildConfig
-import org.jellyfin.sdk.Jellyfin
-import org.jellyfin.sdk.android
 import org.jellyfin.sdk.api.operations.*
+import org.jellyfin.sdk.createJellyfin
 import org.jellyfin.sdk.model.ClientInfo
 import java.util.*
 
@@ -17,10 +16,10 @@ import java.util.*
  * @constructor Creates a new [JellyfinApi] instance
  */
 class JellyfinApi(context: Context, baseUrl: String) {
-    val jellyfin = Jellyfin {
+    val jellyfin = createJellyfin {
         clientInfo =
             ClientInfo(name = context.applicationInfo.loadLabel(context.packageManager).toString(), version = BuildConfig.VERSION_NAME)
-        android(context)
+        this.context = context
     }
     val api = jellyfin.createApi(baseUrl = baseUrl)
     var userId: UUID? = null

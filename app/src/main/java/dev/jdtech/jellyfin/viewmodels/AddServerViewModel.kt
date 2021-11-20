@@ -60,9 +60,9 @@ constructor(
                     api.accessToken = null
                 }
 
-                Timber.d("Remote server: ${recommendedServer.systemInfo?.id}")
+                Timber.d("Remote server: ${recommendedServer.systemInfo.getOrNull()?.id}")
 
-                if (serverAlreadyInDatabase(recommendedServer.systemInfo?.id)) {
+                if (serverAlreadyInDatabase(recommendedServer.systemInfo.getOrNull()?.id)) {
                     _error.value = "Server already added"
                     _navigateToLogin.value = false
                 } else {

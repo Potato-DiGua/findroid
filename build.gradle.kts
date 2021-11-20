@@ -2,6 +2,7 @@
 buildscript {
     val kotlinVersion = "1.5.31"
     repositories {
+        maven { url = uri("https://maven.aliyun.com/repository/public/") }
         google()
         mavenCentral()
         maven {
@@ -9,7 +10,7 @@ buildscript {
         }
     }
     dependencies {
-        classpath("com.android.tools.build:gradle:7.0.2")
+        classpath("com.android.tools.build:gradle:7.0.3")
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion")
 
         // NOTE: Do not place your application dependencies here; they belong
@@ -27,6 +28,7 @@ buildscript {
 
 allprojects {
     repositories {
+        maven { url = uri("https://maven.aliyun.com/repository/public/") }
         google()
         mavenCentral()
     }
