@@ -1,3 +1,6 @@
+import java.util.Properties
+import java.io.FileInputStream
+
 plugins {
     id("com.android.application")
     id("kotlin-android")
@@ -8,6 +11,19 @@ plugins {
     id("com.mikepenz.aboutlibraries.plugin")
 }
 
+val keyProps = Properties()
+val keyPropsFile = rootProject.file("keystore/keystore.properties")
+if (keyPropsFile.exists()) {
+    keyProps.load(FileInputStream(keyPropsFile))
+}
+
+// 读取version.properties
+val versionProps = Properties()
+val versionPropsFile = rootProject.file("version.properties")
+if (versionPropsFile.exists()) {
+    versionProps.load(FileInputStream(versionPropsFile))
+}
+
 android {
     compileSdk = 31
     buildToolsVersion = "31.0.0"
@@ -16,11 +32,27 @@ android {
         applicationId = "dev.jdtech.jellyfin"
         minSdk = 24
         targetSdk = 31
-        versionCode = 5
-        versionName = "0.2.1"
+
+        versionCode = versionProps.getProperty("versionCode")?.toInt()
+        versionName = versionProps.getProperty("versionName")
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
+
+    if (keyPropsFile.exists()) {
+        // 签名
+        signingConfigs {
+            create("release") {
+                keyAlias = keyProps.getProperty("keyAlias")
+                keyPassword = keyProps.getProperty("keyPassword")
+                storeFile = if (keyProps.getProperty("storeFile")
+                        .isNullOrEmpty()
+                ) file(keyProps.getProperty("storeFile")) else null
+                storePassword = keyProps.getProperty("storePassword")
+            }
+        }
+    }
+
 
     buildTypes {
         getByName("debug") {
@@ -29,7 +61,13 @@ android {
         getByName("release") {
             isMinifyEnabled = true
             isShrinkResources = true
-            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            if (signingConfigs.findByName("release") != null) {
+                signingConfig = signingConfigs.getByName("release")
+            }
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
         }
         create("staging") {
             initWith(getByName("release"))
