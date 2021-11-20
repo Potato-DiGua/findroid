@@ -44,7 +44,21 @@ tasks.create<Delete>("clean") {
 
 fun cmdExecute(cmd: String) {
     println("\n执行$cmd")
-    println(Runtime.getRuntime().exec(cmd))
+    try {
+        val pro = Runtime.getRuntime().exec(cmd)
+        val ins: java.io.InputStream = pro.inputStream
+        val read = java.io.BufferedReader(java.io.InputStreamReader(ins))
+        var line: String?
+        while (read.readLine().also { line = it } != null) {
+            println(line)
+        }
+        pro?.waitFor()
+        pro?.destroy()
+    } catch (e: java.io.IOException) {
+        e.printStackTrace()
+    } catch (e: InterruptedException) {
+        e.printStackTrace()
+    }
 }
 
 tasks.create("upgradeVersion") {
