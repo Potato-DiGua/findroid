@@ -6,7 +6,7 @@ import java.io.FileWriter
 buildscript {
     val kotlinVersion = "1.5.31"
     repositories {
-        maven { url = uri("https://maven.aliyun.com/repository/public/") }
+//        maven { url = uri("https://maven.aliyun.com/repository/public/") }
         google()
         mavenCentral()
         maven {
@@ -32,7 +32,7 @@ buildscript {
 
 allprojects {
     repositories {
-        maven { url = uri("https://maven.aliyun.com/repository/public/") }
+//        maven { url = uri("https://maven.aliyun.com/repository/public/") }
         google()
         mavenCentral()
     }
@@ -96,6 +96,7 @@ tasks.create("upgradeVersion") {
         writer.close()
         val tag = "v${versionProps.getProperty("versionName")}"
         cmdExecute("git pull")
+        cmdExecute("git reset HEAD")
         cmdExecute("git add version.properties")
         cmdExecute("git commit -m \"版本号升级为：$tag\"")
         cmdExecute("git push origin")
