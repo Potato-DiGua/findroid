@@ -45,9 +45,11 @@ android {
             create("release") {
                 keyAlias = keyProps.getProperty("keyAlias")
                 keyPassword = keyProps.getProperty("keyPassword")
-                storeFile = if (keyProps.getProperty("storeFile")
-                        .isNullOrEmpty()
-                ) file(keyProps.getProperty("storeFile")) else null
+                storeFile =
+                    if (!keyProps.getProperty("storeFile").isNullOrEmpty())
+                        file(keyProps.getProperty("storeFile"))
+                    else
+                        null
                 storePassword = keyProps.getProperty("storePassword")
             }
         }
@@ -68,6 +70,10 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            // 打模拟器包时去掉
+            ndk {
+                abiFilters.addAll(setOf("arm64-v8a"))
+            }
         }
         create("staging") {
             initWith(getByName("release"))
