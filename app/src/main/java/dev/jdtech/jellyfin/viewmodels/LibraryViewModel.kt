@@ -1,6 +1,8 @@
 package dev.jdtech.jellyfin.viewmodels
 
+import android.app.Application
 import androidx.lifecycle.*
+import androidx.preference.PreferenceManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.jdtech.jellyfin.repository.JellyfinRepository
 import kotlinx.coroutines.launch
@@ -12,7 +14,10 @@ import javax.inject.Inject
 @HiltViewModel
 class LibraryViewModel
 @Inject
-constructor(private val jellyfinRepository: JellyfinRepository) : ViewModel() {
+constructor(
+    private val jellyfinRepository: JellyfinRepository,
+    private val application: Application
+) : ViewModel() {
 
     private val _items = MutableLiveData<List<BaseItemDto>>()
     val items: LiveData<List<BaseItemDto>> = _items
@@ -22,6 +27,8 @@ constructor(private val jellyfinRepository: JellyfinRepository) : ViewModel() {
 
     private val _error = MutableLiveData<String>()
     val error: LiveData<String> = _error
+
+    private val sp = PreferenceManager.getDefaultSharedPreferences(application)
 
     fun loadItems(parentId: UUID, libraryType: String?) {
         _error.value = null
@@ -34,11 +41,19 @@ constructor(private val jellyfinRepository: JellyfinRepository) : ViewModel() {
         }
         viewModelScope.launch {
             try {
-                _items.value = jellyfinRepository.getItems(
-                    parentId,
-                    includeTypes = if (itemType != null) listOf(itemType) else null,
-                    recursive = true
-                )
+                _items.value = if (sp.getBoolean("show_folder", false)) {
+                    jellyfinRepository.getItems(
+                        parentId,
+                        includeTypes = null,
+                        recursive = false
+                    )
+                } else {
+                    jellyfinRepository.getItems(
+                        parentId,
+                        includeTypes = if (itemType != null) listOf(itemType) else null,
+                        recursive = true
+                    )
+                }
             } catch (e: Exception) {
                 Timber.e(e)
                 _error.value = e.toString()

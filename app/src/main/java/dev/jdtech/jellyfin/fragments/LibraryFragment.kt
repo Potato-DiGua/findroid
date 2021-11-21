@@ -56,7 +56,10 @@ class LibraryFragment : Fragment() {
         }
 
         binding.errorLayout.errorDetailsButton.setOnClickListener {
-            ErrorDialogFragment(viewModel.error.value ?: getString(R.string.unknown_error)).show(parentFragmentManager, "errordialog")
+            ErrorDialogFragment(viewModel.error.value ?: getString(R.string.unknown_error)).show(
+                parentFragmentManager,
+                "errordialog"
+            )
         }
 
         viewModel.finishedLoading.observe(viewLifecycleOwner, {
@@ -65,7 +68,11 @@ class LibraryFragment : Fragment() {
 
         binding.itemsRecyclerView.adapter =
             ViewItemListAdapter(ViewItemListAdapter.OnClickListener { item ->
-                navigateToMediaInfoFragment(item)
+                if (item.isFolder == true) {
+                    navigateToLibraryFragment(item)
+                } else {
+                    navigateToMediaInfoFragment(item)
+                }
             })
         viewModel.loadItems(args.libraryId, args.libraryType)
     }
@@ -76,6 +83,16 @@ class LibraryFragment : Fragment() {
                 item.id,
                 item.name,
                 item.type ?: "Unknown"
+            )
+        )
+    }
+
+    private fun navigateToLibraryFragment(library: BaseItemDto) {
+        findNavController().navigate(
+            LibraryFragmentDirections.actionLibraryFragmentSelf(
+                library.id,
+                library.name,
+                library.collectionType,
             )
         )
     }
