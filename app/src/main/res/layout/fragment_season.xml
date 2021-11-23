@@ -2,13 +2,13 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".fragments.SeasonFragment">
+    tools:context=".ui.fragments.season.SeasonFragment">
 
     <data>
 
         <variable
             name="viewModel"
-            type="dev.jdtech.jellyfin.viewmodels.SeasonViewModel" />
+            type="dev.jdtech.jellyfin.ui.fragments.season.SeasonViewModel" />
 
     </data>
 

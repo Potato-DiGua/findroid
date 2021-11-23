@@ -7,7 +7,7 @@
 
         <variable
             name="viewModel"
-            type="dev.jdtech.jellyfin.viewmodels.SearchResultViewModel" />
+            type="dev.jdtech.jellyfin.ui.fragments.searchresult.SearchResultViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

@@ -5,7 +5,7 @@ import android.app.Dialog
 import android.os.Bundle
 import androidx.fragment.app.DialogFragment
 import dev.jdtech.jellyfin.mpv.TrackType
-import dev.jdtech.jellyfin.viewmodels.PlayerActivityViewModel
+import dev.jdtech.jellyfin.ui.activities.player.PlayerActivityViewModel
 import java.lang.IllegalStateException
 
 class TrackSelectionDialogFragment(

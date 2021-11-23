@@ -7,14 +7,14 @@
 
         <variable
             name="viewModel"
-            type="dev.jdtech.jellyfin.viewmodels.MediaViewModel" />
+            type="dev.jdtech.jellyfin.ui.fragments.media.MediaViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:animateLayoutChanges="true"
-        tools:context=".fragments.MediaFragment">
+        tools:context=".ui.fragments.media.MediaFragment">
 
         <com.google.android.material.progressindicator.CircularProgressIndicator
             android:id="@+id/loading_indicator"

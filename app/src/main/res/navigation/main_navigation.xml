@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/homeFragment"
-        android:name="dev.jdtech.jellyfin.fragments.HomeFragment"
+        android:name="dev.jdtech.jellyfin.ui.fragments.home.HomeFragment"
         android:label="@string/title_home"
         tools:layout="@layout/fragment_home">
         <action
@@ -38,7 +38,7 @@
 
     <fragment
         android:id="@+id/mediaFragment"
-        android:name="dev.jdtech.jellyfin.fragments.MediaFragment"
+        android:name="dev.jdtech.jellyfin.ui.fragments.media.MediaFragment"
         android:label="@string/title_media"
         tools:layout="@layout/fragment_media">
         <action
@@ -55,7 +55,7 @@
 
     <fragment
         android:id="@+id/settingsFragment"
-        android:name="dev.jdtech.jellyfin.fragments.SettingsFragment"
+        android:name="dev.jdtech.jellyfin.ui.fragments.settings.SettingsFragment"
         android:label="@string/title_settings">
         <action
             android:id="@+id/action_navigation_settings_to_serverSelectFragment2"
@@ -66,7 +66,7 @@
     </fragment>
     <fragment
         android:id="@+id/libraryFragment"
-        android:name="dev.jdtech.jellyfin.fragments.LibraryFragment"
+        android:name="dev.jdtech.jellyfin.ui.fragments.library.LibraryFragment"
         android:label="{libraryName}"
         tools:layout="@layout/fragment_library">
         <argument
@@ -98,7 +98,7 @@
     </fragment>
     <fragment
         android:id="@+id/mediaInfoFragment"
-        android:name="dev.jdtech.jellyfin.fragments.MediaInfoFragment"
+        android:name="dev.jdtech.jellyfin.ui.fragments.mediainfo.MediaInfoFragment"
         android:label="{itemName}"
         tools:layout="@layout/fragment_media_info">
         <argument
@@ -124,7 +124,7 @@
     </fragment>
     <fragment
         android:id="@+id/seasonFragment"
-        android:name="dev.jdtech.jellyfin.fragments.SeasonFragment"
+        android:name="dev.jdtech.jellyfin.ui.fragments.season.SeasonFragment"
         android:label="{seasonName}"
         tools:layout="@layout/fragment_season">
         <argument
@@ -149,7 +149,7 @@
     </fragment>
     <dialog
         android:id="@+id/episodeBottomSheetFragment"
-        android:name="dev.jdtech.jellyfin.fragments.EpisodeBottomSheetFragment"
+        android:name="dev.jdtech.jellyfin.ui.fragments.episodebottomsheet.EpisodeBottomSheetFragment"
         android:label="EpisodeBottomSheetFragment"
         tools:layout="@layout/episode_bottom_sheet">
         <argument
@@ -161,7 +161,7 @@
     </dialog>
     <activity
         android:id="@+id/playerActivity"
-        android:name="dev.jdtech.jellyfin.PlayerActivity"
+        android:name="dev.jdtech.jellyfin.ui.activities.player.PlayerActivity"
         android:label="activity_player"
         tools:layout="@layout/activity_player">
         <argument
@@ -170,7 +170,7 @@
     </activity>
     <fragment
         android:id="@+id/favoriteFragment"
-        android:name="dev.jdtech.jellyfin.fragments.FavoriteFragment"
+        android:name="dev.jdtech.jellyfin.ui.fragments.favorite.FavoriteFragment"
         android:label="@string/title_favorite"
         tools:layout="@layout/fragment_favorite">
         <action
@@ -182,7 +182,7 @@
     </fragment>
     <fragment
         android:id="@+id/searchResultFragment"
-        android:name="dev.jdtech.jellyfin.fragments.SearchResultFragment"
+        android:name="dev.jdtech.jellyfin.ui.fragments.searchresult.SearchResultFragment"
         android:label="{query}"
         tools:layout="@layout/fragment_search_result">
         <action
@@ -197,7 +197,7 @@
     </fragment>
     <fragment
         android:id="@+id/addServerFragment"
-        android:name="dev.jdtech.jellyfin.fragments.AddServerFragment"
+        android:name="dev.jdtech.jellyfin.ui.fragments.addserver.AddServerFragment"
         android:label="@string/add_server"
         tools:layout="@layout/fragment_add_server">
         <action
@@ -206,7 +206,7 @@
     </fragment>
     <fragment
         android:id="@+id/serverSelectFragment"
-        android:name="dev.jdtech.jellyfin.fragments.ServerSelectFragment"
+        android:name="dev.jdtech.jellyfin.ui.fragments.serverselect.ServerSelectFragment"
         android:label="@string/select_server"
         tools:layout="@layout/fragment_server_select">
         <action
@@ -220,7 +220,7 @@
     </fragment>
     <fragment
         android:id="@+id/loginFragment"
-        android:name="dev.jdtech.jellyfin.fragments.LoginFragment"
+        android:name="dev.jdtech.jellyfin.ui.fragments.login.LoginFragment"
         android:label="@string/login"
         tools:layout="@layout/fragment_login">
         <action
@@ -231,7 +231,7 @@
     </fragment>
     <fragment
         android:id="@+id/initializingFragment"
-        android:name="dev.jdtech.jellyfin.fragments.InitializingFragment"
+        android:name="dev.jdtech.jellyfin.ui.fragments.initializing.InitializingFragment"
         android:label="@string/initializing"
         tools:layout="@layout/fragment_initializing">
         <action

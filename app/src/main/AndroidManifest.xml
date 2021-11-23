@@ -14,10 +14,10 @@
         android:theme="@style/Theme.Jellyfin"
         android:usesCleartextTraffic="true">
         <activity
-            android:name=".PlayerActivity"
+            android:name=".ui.activities.player.PlayerActivity"
             android:screenOrientation="userLandscape" />
         <activity
-            android:name=".MainActivity"
+            android:name=".ui.activities.main.MainActivity"
             android:exported="true"
             android:theme="@style/Theme.JellyfinSplashScreen"
             android:windowSoftInputMode="adjustPan">

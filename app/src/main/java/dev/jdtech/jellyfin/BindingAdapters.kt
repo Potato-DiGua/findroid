@@ -9,6 +9,10 @@ import dev.jdtech.jellyfin.adapters.*
 import dev.jdtech.jellyfin.api.JellyfinApi
 import dev.jdtech.jellyfin.database.Server
 import dev.jdtech.jellyfin.models.FavoriteSection
+import dev.jdtech.jellyfin.adapters.FavoritesListAdapter
+import dev.jdtech.jellyfin.ui.fragments.media.CollectionListAdapter
+import dev.jdtech.jellyfin.adapters.EpisodeItem
+import dev.jdtech.jellyfin.adapters.EpisodeListAdapter
 import org.jellyfin.sdk.model.api.BaseItemDto
 import org.jellyfin.sdk.model.api.BaseItemPerson
 import org.jellyfin.sdk.model.api.ImageType
