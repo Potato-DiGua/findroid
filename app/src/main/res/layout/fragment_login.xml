@@ -8,13 +8,13 @@
 
         <variable
             name="viewModel"
-            type="dev.jdtech.jellyfin.viewmodels.LoginViewModel" />
+            type="dev.jdtech.jellyfin.ui.fragments.login.LoginViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".fragments.LoginFragment">
+        tools:context=".ui.fragments.login.LoginFragment">
 
         <ImageView
             android:id="@+id/image_banner"

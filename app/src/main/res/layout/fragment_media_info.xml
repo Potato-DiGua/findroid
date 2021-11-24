@@ -9,7 +9,7 @@
 
         <variable
             name="viewModel"
-            type="dev.jdtech.jellyfin.viewmodels.MediaInfoViewModel" />
+            type="dev.jdtech.jellyfin.ui.fragments.mediainfo.MediaInfoViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -33,7 +33,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                tools:context=".fragments.MediaInfoFragment">
+                tools:context=".ui.fragments.mediainfo.MediaInfoFragment">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"

@@ -7,14 +7,14 @@
 
         <variable
             name="viewModel"
-            type="dev.jdtech.jellyfin.viewmodels.HomeViewModel" />
+            type="dev.jdtech.jellyfin.ui.fragments.home.HomeViewModel" />
     </data>
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".fragments.HomeFragment">
+        tools:context=".ui.fragments.home.HomeFragment">
 
         <com.google.android.material.progressindicator.LinearProgressIndicator
             android:id="@+id/loading_indicator"

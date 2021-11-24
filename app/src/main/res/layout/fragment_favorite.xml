@@ -6,7 +6,7 @@
     <data>
         <variable
             name="viewModel"
-            type="dev.jdtech.jellyfin.viewmodels.FavoriteViewModel" />
+            type="dev.jdtech.jellyfin.ui.fragments.favorite.FavoriteViewModel" />
     </data>
 
         <androidx.constraintlayout.widget.ConstraintLayout

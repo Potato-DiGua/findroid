@@ -4,7 +4,7 @@ import android.app.AlertDialog
 import android.app.Dialog
 import android.os.Bundle
 import androidx.fragment.app.DialogFragment
-import dev.jdtech.jellyfin.viewmodels.MediaInfoViewModel
+import dev.jdtech.jellyfin.ui.fragments.mediainfo.MediaInfoViewModel
 import java.lang.IllegalStateException
 
 class VideoVersionDialogFragment(

@@ -11,7 +11,7 @@
 
         <variable
             name="viewModel"
-            type="dev.jdtech.jellyfin.viewmodels.EpisodeBottomSheetViewModel" />
+            type="dev.jdtech.jellyfin.ui.fragments.episodebottomsheet.EpisodeBottomSheetViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
