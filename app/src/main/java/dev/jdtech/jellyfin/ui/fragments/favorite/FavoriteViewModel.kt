@@ -26,8 +26,8 @@ constructor(
     private val _finishedLoading = MutableLiveData<Boolean>()
     val finishedLoading: LiveData<Boolean> = _finishedLoading
 
-    private val _error = MutableLiveData<String>()
-    val error: LiveData<String> = _error
+    private val _error = MutableLiveData<String?>()
+    val error: LiveData<String?> = _error
 
     init {
         loadData()

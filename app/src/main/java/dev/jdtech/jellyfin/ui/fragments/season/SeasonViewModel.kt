@@ -24,8 +24,8 @@ constructor(private val jellyfinRepository: JellyfinRepository) : ViewModel() {
     private val _finishedLoading = MutableLiveData<Boolean>()
     val finishedLoading: LiveData<Boolean> = _finishedLoading
 
-    private val _error = MutableLiveData<String>()
-    val error: LiveData<String> = _error
+    private val _error = MutableLiveData<String?>()
+    val error: LiveData<String?> = _error
 
     fun loadEpisodes(seriesId: UUID, seasonId: UUID) {
         _error.value = null

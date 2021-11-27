@@ -45,8 +45,8 @@ constructor(
 
     var playerItems: MutableList<PlayerItem> = mutableListOf()
 
-    private val _playerItemsError = MutableLiveData<String>()
-    val playerItemsError: LiveData<String> = _playerItemsError
+    private val _playerItemsError = MutableLiveData<String?>()
+    val playerItemsError: LiveData<String?> = _playerItemsError
 
     fun loadEpisode(episodeId: UUID) {
         viewModelScope.launch {

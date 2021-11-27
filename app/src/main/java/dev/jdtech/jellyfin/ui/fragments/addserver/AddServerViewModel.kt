@@ -28,8 +28,8 @@ constructor(
     private val _navigateToLogin = MutableLiveData<Boolean>()
     val navigateToLogin: LiveData<Boolean> = _navigateToLogin
 
-    private val _error = MutableLiveData<String>()
-    val error: LiveData<String> = _error
+    private val _error = MutableLiveData<String?>()
+    val error: LiveData<String?> = _error
 
     /**
      * Run multiple check on the server before continuing:

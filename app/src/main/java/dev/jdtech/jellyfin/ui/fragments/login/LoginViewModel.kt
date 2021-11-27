@@ -1,7 +1,10 @@
 package dev.jdtech.jellyfin.ui.fragments.login
 
 import android.content.SharedPreferences
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.jdtech.jellyfin.api.JellyfinApi
 import dev.jdtech.jellyfin.database.Server
@@ -11,7 +14,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.jellyfin.sdk.model.api.AuthenticateUserByName
 import timber.log.Timber
-import java.lang.Exception
 import javax.inject.Inject
 
 @HiltViewModel
@@ -23,8 +25,8 @@ constructor(
     private val database: ServerDatabaseDao
 ) : ViewModel() {
 
-    private val _error = MutableLiveData<String>()
-    val error: LiveData<String> = _error
+    private val _error = MutableLiveData<String?>()
+    val error: LiveData<String?> = _error
 
 
     private val _navigateToMain = MutableLiveData<Boolean>()

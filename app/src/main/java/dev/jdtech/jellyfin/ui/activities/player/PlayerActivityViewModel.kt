@@ -167,7 +167,7 @@ constructor(
             try {
                 for (item in items) {
                     if (item.itemId.toString() == player.currentMediaItem?.mediaId ?: "") {
-                        _currentItemTitle.value = item.name
+                        _currentItemTitle.value = item.name ?: ""
                     }
                 }
                 jellyfinRepository.postPlaybackStart(UUID.fromString(mediaItem?.mediaId))

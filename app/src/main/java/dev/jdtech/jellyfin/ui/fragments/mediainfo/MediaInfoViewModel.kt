@@ -53,8 +53,8 @@ constructor(private val jellyfinRepository: JellyfinRepository) : ViewModel() {
     private val _seasons = MutableLiveData<List<BaseItemDto>>()
     val seasons: LiveData<List<BaseItemDto>> = _seasons
 
-    private val _navigateToPlayer = MutableLiveData<Array<PlayerItem>>()
-    val navigateToPlayer: LiveData<Array<PlayerItem>> = _navigateToPlayer
+    private val _navigateToPlayer = MutableLiveData<Array<PlayerItem>?>()
+    val navigateToPlayer: LiveData<Array<PlayerItem>?> = _navigateToPlayer
 
     private val _played = MutableLiveData<Boolean>()
     val played: LiveData<Boolean> = _played
@@ -62,13 +62,13 @@ constructor(private val jellyfinRepository: JellyfinRepository) : ViewModel() {
     private val _favorite = MutableLiveData<Boolean>()
     val favorite: LiveData<Boolean> = _favorite
 
-    private val _error = MutableLiveData<String>()
-    val error: LiveData<String> = _error
+    private val _error = MutableLiveData<String?>()
+    val error: LiveData<String?> = _error
 
     var playerItems: MutableList<PlayerItem> = mutableListOf()
 
-    private val _playerItemsError = MutableLiveData<String>()
-    val playerItemsError: LiveData<String> = _playerItemsError
+    private val _playerItemsError = MutableLiveData<String?>()
+    val playerItemsError: LiveData<String?> = _playerItemsError
 
     fun loadData(itemId: UUID, itemType: String) {
         _error.value = null
