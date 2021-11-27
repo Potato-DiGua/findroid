@@ -19,11 +19,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.ComposeView
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.integerResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.fragment.app.Fragment
@@ -47,6 +47,7 @@ class LibraryFragment : Fragment() {
     private val viewModel: LibraryViewModel by viewModels()
 
     private val args: LibraryFragmentArgs by navArgs()
+    private lateinit var jellyfinApi: JellyfinApi
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -72,6 +73,7 @@ class LibraryFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        jellyfinApi = JellyfinApi.getInstance(requireContext(), "")
         viewModel.loadItems(args.libraryId, args.libraryType)
     }
 
@@ -120,6 +122,14 @@ class LibraryFragment : Fragment() {
     }
 
     @Composable
+    private fun getImgUrl(item: BaseItemDto): String? {
+        val itemId =
+            if (item.type == "Episode" || item.type == "Season" && item.imageTags.isNullOrEmpty()) item.seriesId else item.id
+        val img = jellyfinApi.api.baseUrl?.plus("/items/${itemId}/Images/${ImageType.PRIMARY}")
+        return img
+    }
+
+    @Composable
     fun Content(viewModel: LibraryViewModel) {
         Box(modifier = Modifier.fillMaxSize()) {
             val finishedLoading = viewModel.finishedLoading.observeAsState()
@@ -159,7 +169,6 @@ class LibraryFragment : Fragment() {
                 when (showType.value) {
                     LibraryViewModel.ShowType.GRID -> {
                         val rows = ceil(it.size / nColumns.toFloat()).toInt()
-
                         items(rows) { rowIndex ->
                             Row {
                                 for (columnIndex in 0 until nColumns) {
@@ -167,7 +176,7 @@ class LibraryFragment : Fragment() {
                                     val itemIndex = rowIndex * nColumns + columnIndex
                                     if (itemIndex >= it.size) {
                                         // 占位
-                                        Box(
+                                        Spacer(
                                             modifier = Modifier.weight(
                                                 (nColumns - columnIndex).toFloat(),
                                                 fill = true
@@ -177,10 +186,11 @@ class LibraryFragment : Fragment() {
                                     }
 
                                     val item = it[itemIndex]
-                                    Box(modifier = Modifier.weight(1f, fill = true)) {
-                                        ListItem(item = item, modifier = Modifier.width(50.dp)) {
-                                            onClick(item)
-                                        }
+                                    GridItem(
+                                        item = item,
+                                        modifier = Modifier.weight(1f, fill = true)
+                                    ) {
+                                        onClick(item)
                                     }
                                 }
                             }
@@ -188,7 +198,7 @@ class LibraryFragment : Fragment() {
                     }
                     else -> {
                         items(it) { item ->
-                            ListItem(item = item, modifier = null) {
+                            ListItem(item = item, modifier = Modifier) {
                                 onClick(item)
                             }
                         }
@@ -201,22 +211,52 @@ class LibraryFragment : Fragment() {
     }
 
     @Composable
-    fun ListItem(item: BaseItemDto, modifier: Modifier?, onClick: () -> Unit) {
-        val jellyfinApi = JellyfinApi.getInstance(LocalContext.current, "")
-        val itemId =
-            if (item.type == "Episode" || item.type == "Season" && item.imageTags.isNullOrEmpty()) item.seriesId else item.id
-        val img = jellyfinApi.api.baseUrl?.plus("/items/${itemId}/Images/${ImageType.PRIMARY}")
-
+    fun GridItem(item: BaseItemDto, modifier: Modifier, onClick: () -> Unit) {
+        val img = getImgUrl(item)
         Box(
             modifier = Modifier
                 .padding(12.dp, 0.dp, 12.dp, 24.dp)
                 .clickable {
                     onClick()
-                }.apply {
-                    if (modifier != null) {
-                        then(modifier)
-                    }
                 }
+                .then(modifier)
+        ) {
+            Column() {
+                Image(
+                    painter = rememberImagePainter(img, builder = {
+                        placeholder(R.color.neutral_800)
+                        error(R.color.neutral_800)
+                    }),
+                    contentDescription = "",
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .aspectRatio(3 / 2f)
+                        .clip(RoundedCornerShape(15.dp)),
+                    contentScale = ContentScale.Crop,
+                )
+                Text(
+                    text = (if (item.type == "Episode") item.seriesName else item.name) ?: "",
+                    modifier = Modifier.padding(0.dp, 4.dp, 0.dp, 0.dp),
+                    fontSize = 14.sp,
+                    maxLines = 3,
+                    overflow = TextOverflow.Ellipsis
+                )
+            }
+
+            CornerSign(modifier = Modifier.align(Alignment.TopEnd), item)
+        }
+    }
+
+    @Composable
+    fun ListItem(item: BaseItemDto, modifier: Modifier, onClick: () -> Unit) {
+        val img = getImgUrl(item)
+        Box(
+            modifier = Modifier
+                .padding(12.dp, 0.dp, 12.dp, 24.dp)
+                .clickable {
+                    onClick()
+                }
+                .then(modifier)
         ) {
             Column() {
                 Image(
