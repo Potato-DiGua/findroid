@@ -1,5 +1,5 @@
-import java.util.Properties
 import java.io.FileInputStream
+import java.util.*
 
 plugins {
     id("com.android.application")
@@ -37,6 +37,9 @@ android {
         versionName = versionProps.getProperty("versionName")
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        vectorDrawables {
+            useSupportLibrary = true
+        }
     }
 
     if (keyPropsFile.exists()) {
@@ -89,6 +92,7 @@ android {
 
     kotlinOptions {
         jvmTarget = "1.8"
+        useIR = true
     }
 
     buildFeatures {
@@ -96,6 +100,14 @@ android {
         viewBinding = true
         // Enables Jetpack Compose for this module
         compose = true
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion = rootProject.extra["compose_version"] as String
+    }
+    packagingOptions {
+        resources {
+            excludes += "/META-INF/{AL2.0,LGPL2.1}"
+        }
     }
 }
 
@@ -109,6 +121,9 @@ dependencies {
 
     // ConstraintLayout
     implementation("androidx.constraintlayout:constraintlayout:2.1.0")
+    implementation("androidx.compose.ui:ui:${rootProject.extra["compose_version"]}")
+    implementation("androidx.compose.ui:ui-tooling-preview:${rootProject.extra["compose_version"]}")
+
 
     // Navigation
     val navigationVersion = "2.3.5"
@@ -161,20 +176,30 @@ dependencies {
     implementation("com.mikepenz:aboutlibraries:$aboutLibrariesVersion")
 
 
+    val lifecycle_version = "2.4.0"
+    // ViewModel
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version")
+    // ViewModel utilities for Compose
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:$lifecycle_version")
+    // LiveData
+    implementation("androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle_version")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.3.1")
+
+
     // Integration with activities
     implementation("androidx.activity:activity-compose:1.3.1")
     // Compose Material Design
-    implementation("androidx.compose.material:material:1.0.5")
+    implementation("androidx.compose.material:material:${rootProject.extra["compose_version"]}")
     // Animations
-    implementation("androidx.compose.animation:animation:1.0.5")
+    implementation("androidx.compose.animation:animation:${rootProject.extra["compose_version"]}")
     // Tooling support (Previews, etc.)
-    implementation("androidx.compose.ui:ui-tooling:1.0.5")
-    // Integration with ViewModels
-    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:1.0.0-alpha07")
+    implementation("androidx.compose.ui:ui-tooling:${rootProject.extra["compose_version"]}")
     // When using a MDC theme
     implementation("com.google.android.material:compose-theme-adapter:1.0.5")
     // When using a AppCompat theme
-    implementation("com.google.accompanist:accompanist-appcompat-theme:0.16.0")
+//    implementation("com.google.accompanist:accompanist-appcompat-theme:0.16.0")
+    implementation("androidx.compose.runtime:runtime-livedata:${rootProject.extra["compose_version"]}")
+    implementation("io.coil-kt:coil-compose:1.4.0")
 
 
     // Testing

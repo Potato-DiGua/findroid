@@ -63,4 +63,8 @@
     <string name="force_software_decoding">Force software decoding</string>
     <string name="force_software_decoding_summary">Disable hardware decoding and use software decoding. Can be useful if hardware decoding gives weird artifacts.</string>
     <string name="show_folder">Show Folder</string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="folder">Folder</string>
+    <string name="show_list">List</string>
+    <string name="show_grid">Grid</string>
 </resources>

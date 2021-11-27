@@ -64,4 +64,7 @@
     <string name="force_software_decoding">强制软件解码</string>
     <string name="force_software_decoding_summary">禁用硬件解码并使用软件解码。 如果硬件解码产生奇怪的图像，这可能很有用。</string>
     <string name="show_folder">展示文件夾</string>
+    <string name="folder">文件夹</string>
+    <string name="show_list">列表</string>
+    <string name="show_grid">网格</string>
 </resources>

@@ -67,8 +67,7 @@
     <fragment
         android:id="@+id/libraryFragment"
         android:name="dev.jdtech.jellyfin.ui.fragments.library.LibraryFragment"
-        android:label="{libraryName}"
-        tools:layout="@layout/fragment_library">
+        android:label="{libraryName}">
         <argument
             android:name="libraryId"
             app:argType="java.util.UUID" />

@@ -1,7 +1,10 @@
 package dev.jdtech.jellyfin.ui.fragments.library
 
 import android.app.Application
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import androidx.preference.PreferenceManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.jdtech.jellyfin.repository.JellyfinRepository
@@ -18,6 +21,9 @@ constructor(
     private val jellyfinRepository: JellyfinRepository,
     private val application: Application
 ) : ViewModel() {
+    val SP_KEY_SHOW_TYPE = "showType"
+
+    private val sp = PreferenceManager.getDefaultSharedPreferences(application)
 
     private val _items = MutableLiveData<List<BaseItemDto>>()
     val items: LiveData<List<BaseItemDto>> = _items
@@ -25,10 +31,13 @@ constructor(
     private val _finishedLoading = MutableLiveData<Boolean>()
     val finishedLoading: LiveData<Boolean> = _finishedLoading
 
-    private val _error = MutableLiveData<String>()
-    val error: LiveData<String> = _error
+    private val _error = MutableLiveData<String?>()
+    val error: LiveData<String?> = _error
 
-    private val sp = PreferenceManager.getDefaultSharedPreferences(application)
+    private val _showType =
+        MutableLiveData(ShowType.toShowType(sp.getString(SP_KEY_SHOW_TYPE, "")))
+    val showType: LiveData<ShowType> = _showType
+
 
     fun loadItems(parentId: UUID, libraryType: String?) {
         _error.value = null
@@ -60,5 +69,29 @@ constructor(
             }
             _finishedLoading.value = true
         }
+    }
+
+    fun changeShowType(type: ShowType) {
+        _showType.postValue(type)
+        sp.edit().putString(SP_KEY_SHOW_TYPE, type.toString()).apply()
+    }
+
+    enum class ShowType {
+        LIST, GRID;
+
+        companion object {
+            fun toShowType(value: String?): ShowType {
+                return try {
+                    value?.let {
+                        valueOf(value)
+                    } ?: LIST
+
+                } catch (ex: java.lang.Exception) {
+                    // For error cases
+                    LIST
+                }
+            }
+        }
+
     }
 }

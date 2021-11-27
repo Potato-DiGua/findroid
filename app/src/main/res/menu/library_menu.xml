@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/action_show_list"
+        android:icon="@drawable/ic_settings"
+        android:title="@string/show_list"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_show_gird"
+        android:icon="@drawable/ic_settings"
+        android:title="@string/show_grid"
+        app:showAsAction="never" />
+</menu>
