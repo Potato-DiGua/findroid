@@ -1,3 +1,4 @@
+![Download](https://img.shields.io/github/downloads/Potato-DiGua/findroid/total)
 ![Findroid banner](images/findroid-banner.png)
 
 # Findroid
