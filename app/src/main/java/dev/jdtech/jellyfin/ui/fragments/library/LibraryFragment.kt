@@ -10,19 +10,22 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.integerResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -36,6 +39,8 @@ import dagger.hilt.android.AndroidEntryPoint
 import dev.jdtech.jellyfin.R
 import dev.jdtech.jellyfin.api.JellyfinApi
 import dev.jdtech.jellyfin.dialogs.ErrorDialogFragment
+import dev.jdtech.jellyfin.models.ShowType
+import dev.jdtech.jellyfin.models.SortType
 import dev.jdtech.jellyfin.ui.views.ErrorDialogWithoutBorder
 import org.jellyfin.sdk.model.api.BaseItemDto
 import org.jellyfin.sdk.model.api.ImageType
@@ -48,6 +53,7 @@ class LibraryFragment : Fragment() {
 
     private val args: LibraryFragmentArgs by navArgs()
     private lateinit var jellyfinApi: JellyfinApi
+    private val sortTypeAlterDialogState = mutableStateOf(false)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -61,7 +67,20 @@ class LibraryFragment : Fragment() {
         return ComposeView(requireContext()).apply {
             setContent {
                 MdcTheme() {
-                    Content(viewModel)
+                    Surface {
+                        val sortType = viewModel.sortType.observeAsState()
+                        val sortReverse = viewModel.sortReverse.observeAsState()
+                        Content(viewModel)
+                        ChooseSortTypeAlterDialog(
+                            show = sortTypeAlterDialogState,
+                            initType = sortType.value ?: SortType.DEFAULT,
+                            isReverse = sortReverse.value ?: false
+                        ) { type, reverse ->
+                            viewModel.changeSortType(type, reverse)
+                            viewModel.sortList(type, reverse)
+                        }
+                    }
+
                 }
             }
         }
@@ -108,11 +127,15 @@ class LibraryFragment : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.action_show_list -> {
-                viewModel.changeShowType(LibraryViewModel.ShowType.LIST)
+                viewModel.changeShowType(ShowType.LIST)
                 true
             }
             R.id.action_show_gird -> {
-                viewModel.changeShowType(LibraryViewModel.ShowType.GRID)
+                viewModel.changeShowType(ShowType.GRID)
+                true
+            }
+            R.id.action_sort_list -> {
+                sortTypeAlterDialogState.value = true
                 true
             }
             else -> {
@@ -125,8 +148,7 @@ class LibraryFragment : Fragment() {
     private fun getImgUrl(item: BaseItemDto): String? {
         val itemId =
             if (item.type == "Episode" || item.type == "Season" && item.imageTags.isNullOrEmpty()) item.seriesId else item.id
-        val img = jellyfinApi.api.baseUrl?.plus("/items/${itemId}/Images/${ImageType.PRIMARY}")
-        return img
+        return jellyfinApi.api.baseUrl?.plus("/items/${itemId}/Images/${ImageType.PRIMARY}")
     }
 
     @Composable
@@ -167,7 +189,7 @@ class LibraryFragment : Fragment() {
         LazyColumn(modifier = Modifier.padding(top = 16.dp)) {
             list.value?.let {
                 when (showType.value) {
-                    LibraryViewModel.ShowType.GRID -> {
+                    ShowType.GRID -> {
                         val rows = ceil(it.size / nColumns.toFloat()).toInt()
                         items(rows) { rowIndex ->
                             Row {
@@ -323,4 +345,80 @@ class LibraryFragment : Fragment() {
 
         }
     }
+}
+
+@Composable
+fun ChooseSortTypeAlterDialog(
+    show: MutableState<Boolean>,
+    initType: SortType,
+    isReverse: Boolean,
+    onSelect: (sortType: SortType, reverse: Boolean) -> Unit
+) {
+    if (!show.value) {
+        return
+    }
+    AlertDialog(
+        onDismissRequest = {},
+        title = { Text(text = "排序") },
+        text = {
+            Column() {
+                Text(
+                    text = "排序方式",
+                    color = Color.Black,
+                    modifier = Modifier.padding(vertical = 4.dp),
+                    fontWeight = FontWeight.Bold
+                )
+                SortType.values().forEach { type ->
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.padding(bottom = 4.dp)
+                    ) {
+                        RadioButton(
+                            selected = initType == type,
+                            onClick = {
+                                onSelect(type, isReverse)
+                                show.value = false
+                            })
+                        Text(text = type.display)
+                    }
+                }
+                Text(
+                    text = "排序顺序",
+                    color = Color.Black,
+                    modifier = Modifier.padding(vertical = 4.dp),
+                    fontWeight = FontWeight.Bold
+                )
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.padding(bottom = 4.dp)
+                ) {
+                    RadioButton(
+                        selected = !isReverse,
+                        onClick = {
+                            onSelect(initType, false)
+                            show.value = false
+                        })
+                    Text(text = "升序")
+                }
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.padding(bottom = 4.dp)
+                ) {
+                    RadioButton(
+                        selected = isReverse,
+                        onClick = {
+                            onSelect(initType, true)
+                            show.value = false
+                        })
+                    Text(text = "降序")
+                }
+            }
+
+        },
+        confirmButton = {},
+        dismissButton = {
+            TextButton(onClick = { show.value = false }) {
+                Text(text = "取消")
+            }
+        })
 }
