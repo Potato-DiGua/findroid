@@ -94,6 +94,9 @@
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+        <action
+            android:id="@+id/action_libraryFragment_to_ijkPlayerActivity"
+            app:destination="@id/ijkPlayerActivity" />
     </fragment>
     <fragment
         android:id="@+id/mediaInfoFragment"
@@ -249,5 +252,22 @@
     <action
         android:id="@+id/action_global_loginFragment"
         app:destination="@id/loginFragment" />
+    <activity
+        android:id="@+id/ijkPlayerActivity"
+        android:name="dev.jdtech.jellyfin.ui.activities.player.IjkPlayerActivity"
+        android:label="activity_ijk_player"
+        tools:layout="@layout/activity_ijk_player">
+        <argument
+            android:name="itemId"
+            app:argType="java.util.UUID" />
+        <argument
+            android:name="itemName"
+            android:defaultValue="Media Info"
+            app:argType="string"
+            app:nullable="true" />
+        <argument
+            android:name="itemType"
+            app:argType="string" />
+    </activity>
 
 </navigation>

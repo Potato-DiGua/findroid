@@ -98,7 +98,12 @@ class LibraryFragment : Fragment() {
 
     private fun navigateToMediaInfoFragment(item: BaseItemDto) {
         findNavController().navigate(
-            LibraryFragmentDirections.actionLibraryFragmentToMediaInfoFragment(
+//            LibraryFragmentDirections.actionLibraryFragmentToMediaInfoFragment(
+//                item.id,
+//                item.name,
+//                item.type ?: "Unknown"
+//            )
+            LibraryFragmentDirections.actionLibraryFragmentToIjkPlayerActivity(
                 item.id,
                 item.name,
                 item.type ?: "Unknown"

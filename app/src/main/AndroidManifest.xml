@@ -14,6 +14,23 @@
         android:theme="@style/Theme.Jellyfin"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".ui.activities.player.IjkPlayerActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode"
+            android:exported="true"
+            android:theme="@style/TranslucentTheme"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <data
+                    android:host="www.findroid.com"
+                    android:path="/ijkplayer"
+                    android:scheme="findroid" />
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.BROWSABLE" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity
             android:name=".ui.activities.player.PlayerActivity"
             android:screenOrientation="userLandscape" />
         <activity
@@ -27,7 +44,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
     </application>
 
 </manifest>

@@ -7,7 +7,7 @@ buildscript {
     val compose_version by extra("1.0.5")
     val kotlinVersion = "1.5.31"
     repositories {
-//        maven { url = uri("https://maven.aliyun.com/repository/public/") }
+        maven { url = uri("https://maven.aliyun.com/repository/public/") }
         google()
         mavenCentral()
         maven {
@@ -33,7 +33,8 @@ buildscript {
 
 allprojects {
     repositories {
-//        maven { url = uri("https://maven.aliyun.com/repository/public/") }
+        maven { url = uri("https://jitpack.io") }
+        maven { url = uri("https://maven.aliyun.com/repository/public/") }
         google()
         mavenCentral()
     }
@@ -88,7 +89,11 @@ tasks.create("upgradeVersion") {
                     (oldVersionName.substring(oldVersionName.lastIndexOf('.') + 1).toInt() + 1)
         )
         val tip =
-            "版本号从$oldVersionName($oldVersionCode)升级到${versionProps.getProperty("versionName")}(${versionProps.getProperty("versionCode")})"
+            "版本号从$oldVersionName($oldVersionCode)升级到${versionProps.getProperty("versionName")}(${
+                versionProps.getProperty(
+                    "versionCode"
+                )
+            })"
         println(tip)
 
         val writer = FileWriter(versionPropsFile)
