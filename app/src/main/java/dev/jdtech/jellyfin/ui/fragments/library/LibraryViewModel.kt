@@ -51,13 +51,21 @@ constructor(
     private val _sortReverse = MutableLiveData(sp.getBoolean(SP_KEY_SORT_REVERSE, false))
     val sortReverse: LiveData<Boolean> = _sortReverse
 
+    private val _isRefreshing = MutableLiveData(false)
+    val isRefreshing: LiveData<Boolean> = _isRefreshing
+
     // 原数据
     var origin: List<BaseItemDto>? = null
 
 
-    fun loadItems(parentId: UUID, libraryType: String?) {
+    fun loadItems(parentId: UUID, libraryType: String?, refreshing: Boolean = false) {
         _error.value = null
-        _finishedLoading.value = false
+
+        if (refreshing) {
+            _isRefreshing.value = true
+        } else {
+            _finishedLoading.value = false
+        }
         Timber.d("$libraryType")
         val itemType = when (libraryType) {
             "movies" -> "Movie"
@@ -86,6 +94,7 @@ constructor(
                 _error.value = e.toString()
             }
             _finishedLoading.value = true
+            _isRefreshing.value = false
         }
     }
 
@@ -113,16 +122,22 @@ constructor(
             return
         }
 
-
-        _items.value = sortList(origin!!, reverse) {
-            when (type) {
-                SortType.NAME -> it.name
-                SortType.DEFAULT -> it.name
+        _items.value = when (type) {
+            SortType.NAME -> origin!!.sortedWith { a, b ->
+                val result = if (a.isFolder == true && b.isFolder != true) {
+                    -1
+                } else if (a.isFolder != true && b.isFolder == true) {
+                    1
+                } else {
+                    (a.name ?: "").compareTo(b.name ?: "")
+                }
+                return@sortedWith if (reverse) -result else result
             }
+            SortType.DEFAULT -> sortList(origin!!, reverse) { it.name }
         }
     }
 
-    fun <T, R : Comparable<R>> sortList(
+    private fun <T, R : Comparable<R>> sortList(
         list: List<T>,
         reverse: Boolean,
         selector: (T) -> R?

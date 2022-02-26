@@ -276,4 +276,11 @@ class JellyfinRepositoryImpl(private val jellyfinApi: JellyfinApi) : JellyfinRep
         }
         return intros
     }
+
+
+    override fun getImgUrl(item: BaseItemDto): String? {
+        val itemId =
+            if (item.type == "Episode" || item.type == "Season" && item.imageTags.isNullOrEmpty()) item.seriesId else item.id
+        return jellyfinApi.api.baseUrl?.plus("/items/${itemId}/Images/${ImageType.PRIMARY}")
+    }
 }

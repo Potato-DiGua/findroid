@@ -15,6 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -34,16 +35,18 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import coil.compose.rememberImagePainter
+import com.google.accompanist.swiperefresh.SwipeRefresh
+import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.google.android.material.composethemeadapter.MdcTheme
 import dagger.hilt.android.AndroidEntryPoint
 import dev.jdtech.jellyfin.R
-import dev.jdtech.jellyfin.api.JellyfinApi
 import dev.jdtech.jellyfin.dialogs.ErrorDialogFragment
 import dev.jdtech.jellyfin.models.ShowType
 import dev.jdtech.jellyfin.models.SortType
+import dev.jdtech.jellyfin.repository.JellyfinRepository
 import dev.jdtech.jellyfin.ui.views.ErrorDialogWithoutBorder
 import org.jellyfin.sdk.model.api.BaseItemDto
-import org.jellyfin.sdk.model.api.ImageType
+import javax.inject.Inject
 import kotlin.math.ceil
 
 @AndroidEntryPoint
@@ -52,7 +55,13 @@ class LibraryFragment : Fragment() {
     private val viewModel: LibraryViewModel by viewModels()
 
     private val args: LibraryFragmentArgs by navArgs()
-    private lateinit var jellyfinApi: JellyfinApi
+
+//    @Inject
+//    private lateinit var jellyfinApi: JellyfinApi
+
+    @Inject
+    lateinit var jellyfinRepository: JellyfinRepository
+
     private val sortTypeAlterDialogState = mutableStateOf(false)
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -92,7 +101,6 @@ class LibraryFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        jellyfinApi = JellyfinApi.getInstance(requireContext(), "")
         viewModel.loadItems(args.libraryId, args.libraryType)
     }
 
@@ -149,12 +157,6 @@ class LibraryFragment : Fragment() {
         }
     }
 
-    @Composable
-    private fun getImgUrl(item: BaseItemDto): String? {
-        val itemId =
-            if (item.type == "Episode" || item.type == "Season" && item.imageTags.isNullOrEmpty()) item.seriesId else item.id
-        return jellyfinApi.api.baseUrl?.plus("/items/${itemId}/Images/${ImageType.PRIMARY}")
-    }
 
     @Composable
     fun Content(viewModel: LibraryViewModel) {
@@ -180,7 +182,13 @@ class LibraryFragment : Fragment() {
                         )
                     })
             } else {
-                LibraryList(viewModel)
+                val isRefreshing = viewModel.isRefreshing.observeAsState()
+                SwipeRefresh(
+                    state = rememberSwipeRefreshState(isRefreshing.value ?: false),
+                    onRefresh = { viewModel.loadItems(args.libraryId, args.libraryType, true) },
+                ) {
+                    LibraryList(viewModel)
+                }
             }
         }
     }
@@ -239,7 +247,7 @@ class LibraryFragment : Fragment() {
 
     @Composable
     fun GridItem(item: BaseItemDto, modifier: Modifier, onClick: () -> Unit) {
-        val img = getImgUrl(item)
+        val img = jellyfinRepository.getImgUrl(item)
         Box(
             modifier = Modifier
                 .padding(12.dp, 0.dp, 12.dp, 24.dp)
@@ -276,7 +284,7 @@ class LibraryFragment : Fragment() {
 
     @Composable
     fun ListItem(item: BaseItemDto, modifier: Modifier, onClick: () -> Unit) {
-        val img = getImgUrl(item)
+        val img = jellyfinRepository.getImgUrl(item)
         Box(
             modifier = Modifier
                 .padding(12.dp, 0.dp, 12.dp, 24.dp)
@@ -362,6 +370,14 @@ fun ChooseSortTypeAlterDialog(
     if (!show.value) {
         return
     }
+
+    val sortType = remember {
+        mutableStateOf(initType)
+    }
+    val reverse = remember {
+        mutableStateOf(isReverse)
+    }
+
     AlertDialog(
         onDismissRequest = {},
         title = { Text(text = "排序") },
@@ -379,10 +395,9 @@ fun ChooseSortTypeAlterDialog(
                         modifier = Modifier.padding(bottom = 4.dp)
                     ) {
                         RadioButton(
-                            selected = initType == type,
+                            selected = sortType.value == type,
                             onClick = {
-                                onSelect(type, isReverse)
-                                show.value = false
+                                sortType.value = type
                             })
                         Text(text = type.display)
                     }
@@ -398,10 +413,9 @@ fun ChooseSortTypeAlterDialog(
                     modifier = Modifier.padding(bottom = 4.dp)
                 ) {
                     RadioButton(
-                        selected = !isReverse,
+                        selected = !reverse.value,
                         onClick = {
-                            onSelect(initType, false)
-                            show.value = false
+                            reverse.value = false
                         })
                     Text(text = "升序")
                 }
@@ -410,17 +424,23 @@ fun ChooseSortTypeAlterDialog(
                     modifier = Modifier.padding(bottom = 4.dp)
                 ) {
                     RadioButton(
-                        selected = isReverse,
+                        selected = reverse.value,
                         onClick = {
-                            onSelect(initType, true)
-                            show.value = false
+                            reverse.value = true
                         })
                     Text(text = "降序")
                 }
             }
 
         },
-        confirmButton = {},
+        confirmButton = {
+            TextButton(onClick = {
+                onSelect(sortType.value, reverse.value)
+                show.value = false
+            }) {
+                Text(text = "确定")
+            }
+        },
         dismissButton = {
             TextButton(onClick = { show.value = false }) {
                 Text(text = "取消")

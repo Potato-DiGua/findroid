@@ -2,19 +2,27 @@ package dev.jdtech.jellyfin.ui.activities.player
 
 import android.content.res.Configuration
 import android.os.Bundle
+import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.LinearLayout
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.AbstractComposeView
 import androidx.navigation.navArgs
 import com.blankj.utilcode.util.BarUtils
 import com.blankj.utilcode.util.ScreenUtils
+import com.bumptech.glide.Glide
 import com.shuyu.gsyvideoplayer.GSYVideoManager
 import com.shuyu.gsyvideoplayer.builder.GSYVideoOptionBuilder
 import com.shuyu.gsyvideoplayer.listener.GSYSampleCallBack
 import com.shuyu.gsyvideoplayer.utils.OrientationUtils
 import dagger.hilt.android.AndroidEntryPoint
 import dev.jdtech.jellyfin.databinding.ActivityIjkPlayerBinding
-import dev.jdtech.jellyfin.models.PlayerItem
+import dev.jdtech.jellyfin.repository.JellyfinRepository
+import dev.jdtech.jellyfin.ui.fragments.mediainfo.MediaInfo
 import dev.jdtech.jellyfin.ui.fragments.mediainfo.MediaInfoViewModel
+import javax.inject.Inject
 
 
 @AndroidEntryPoint
@@ -23,8 +31,11 @@ class IjkPlayerActivity : AppCompatActivity() {
         const val INTENT_KEY_PLAYER_ITEM = "PLAYER_ITEM"
     }
 
+    private lateinit var thumbImageView: ImageView
     lateinit var binding: ActivityIjkPlayerBinding
-    private lateinit var playerItem: List<PlayerItem>
+
+    @Inject
+    lateinit var jellyfinRepository: JellyfinRepository
     private val viewModel: IjkPlayerActivityViewModel by viewModels()
     private val mediaInfoViewModel: MediaInfoViewModel by viewModels()
 
@@ -48,41 +59,56 @@ class IjkPlayerActivity : AppCompatActivity() {
         }
 
         initVideoPlayer()
+        initView()
         init()
 
 
     }
 
+    private fun initView() {
+        binding.container.addView(
+            object : AbstractComposeView(this) {
+                @Composable
+                override fun Content() {
+                    MediaInfo(viewModel = mediaInfoViewModel)
+                }
+            },
+            LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+            )
+        )
+    }
+
     private fun init() {
-//        val extra = intent.getParcelableArrayExtra(
-//            INTENT_KEY_PLAYER_ITEM
-//        )
-//        if (extra.isNullOrEmpty()) {
-//            finish()
-//            return
-//        }
-//        playerItem = extra.map { it as PlayerItem }.toList()
+        mediaInfoViewModel.apply {
+            itemId = args.itemId
+            itemName = args.itemName
+            itemType = args.itemType
+        }
         viewModel.mediaItems.observe(this) {
             binding.videoPlayer.setUp(
                 it[0].playbackProperties?.uri.toString(),
                 true,
-                mediaInfoViewModel.playerItems[0].name ?: ""
+                 ""
             )
         }
         mediaInfoViewModel.navigateToPlayer.observe(this) {
-            if (!flag && !it.isNullOrEmpty()) {
+            if (it != null) {
                 viewModel.initializePlayer(it.toList())
-                flag = true
             }
         }
         mediaInfoViewModel.item.observe(this) {
             mediaInfoViewModel.preparePlayerItems()
+            Glide
+                .with(this)
+                .load(jellyfinRepository.getImgUrl(it))
+                .into(thumbImageView)
+
         }
         mediaInfoViewModel.loadData(args.itemId, args.itemType)
 
     }
-
-    private var flag = false
 
     private fun initVideoPlayer() {
         val detailPlayer = binding.videoPlayer
@@ -97,6 +123,7 @@ class IjkPlayerActivity : AppCompatActivity() {
         orientationUtils = OrientationUtils(this, detailPlayer);
         //初始化不打开外部的旋转
         // orientationUtils.setEnable(false);
+        thumbImageView = ImageView(this)
         GSYVideoOptionBuilder()
             .setIsTouchWiget(true)
             .setRotateViewAuto(false)
@@ -104,7 +131,8 @@ class IjkPlayerActivity : AppCompatActivity() {
             .setAutoFullWithSize(false)
             .setShowFullAnimation(false)
             .setNeedLockFull(true)
-            .setCacheWithPlay(false)
+            .setCacheWithPlay(true)
+            .setThumbImageView(thumbImageView)
 //            .setNeedOrientationUtils(false)
             .setVideoAllCallBack(object : GSYSampleCallBack() {
                 override fun onPrepared(url: String, vararg objects: Any) {

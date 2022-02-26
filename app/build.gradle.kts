@@ -223,6 +223,7 @@ dependencies {
 //    implementation("com.google.accompanist:accompanist-appcompat-theme:0.16.0")
     implementation("androidx.compose.runtime:runtime-livedata:${rootProject.extra["compose_version"]}")
     implementation("io.coil-kt:coil-compose:1.4.0")
+    implementation("com.google.accompanist:accompanist-swiperefresh:0.24.3-alpha")
 
 
     // Testing

@@ -23,6 +23,9 @@ import javax.inject.Inject
 class MediaInfoViewModel
 @Inject
 constructor(private val jellyfinRepository: JellyfinRepository) : ViewModel() {
+    var itemId: UUID? = null
+    var itemType: String = ""
+    var itemName: String? = ""
 
     private val _item = MutableLiveData<BaseItemDto>()
     val item: LiveData<BaseItemDto> = _item
@@ -64,8 +67,6 @@ constructor(private val jellyfinRepository: JellyfinRepository) : ViewModel() {
 
     private val _error = MutableLiveData<String?>()
     val error: LiveData<String?> = _error
-
-    var playerItems: MutableList<PlayerItem> = mutableListOf()
 
     private val _playerItemsError = MutableLiveData<String?>()
     val playerItemsError: LiveData<String?> = _playerItemsError
@@ -182,16 +183,19 @@ constructor(private val jellyfinRepository: JellyfinRepository) : ViewModel() {
         _playerItemsError.value = null
         viewModelScope.launch {
             try {
-                createPlayerItems(_item.value!!, mediaSourceIndex)
-                _navigateToPlayer.value = playerItems.toTypedArray()
+                _navigateToPlayer.value =
+                    createPlayerItems(_item.value!!, mediaSourceIndex).toTypedArray()
             } catch (e: Exception) {
                 _playerItemsError.value = e.message
             }
         }
     }
 
-    private suspend fun createPlayerItems(series: BaseItemDto, mediaSourceIndex: Int? = null) {
-        playerItems.clear()
+    private suspend fun createPlayerItems(
+        series: BaseItemDto,
+        mediaSourceIndex: Int? = null
+    ): List<PlayerItem> {
+        val playerItems = mutableListOf<PlayerItem>()
 
         val playbackPosition = item.value?.userData?.playbackPositionTicks?.div(10000) ?: 0
 
@@ -202,7 +206,14 @@ constructor(private val jellyfinRepository: JellyfinRepository) : ViewModel() {
             val intros = jellyfinRepository.getIntros(series.id)
             for (intro in intros) {
                 if (intro.mediaSources.isNullOrEmpty()) continue
-                playerItems.add(PlayerItem(intro.name, intro.id, intro.mediaSources?.get(0)?.id!!, 0))
+                playerItems.add(
+                    PlayerItem(
+                        intro.name,
+                        intro.id,
+                        intro.mediaSources?.get(0)?.id!!,
+                        0
+                    )
+                )
                 introsCount += 1
             }
         }
@@ -265,6 +276,7 @@ constructor(private val jellyfinRepository: JellyfinRepository) : ViewModel() {
         }
 
         if (playerItems.isEmpty() || playerItems.count() == introsCount) throw Exception("No playable items found")
+        return playerItems
     }
 
     fun doneNavigatingToPlayer() {
