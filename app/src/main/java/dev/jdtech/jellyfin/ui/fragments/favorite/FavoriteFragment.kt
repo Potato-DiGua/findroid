@@ -1,10 +1,10 @@
 package dev.jdtech.jellyfin.ui.fragments.favorite
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import dagger.hilt.android.AndroidEntryPoint
@@ -14,6 +14,7 @@ import dev.jdtech.jellyfin.adapters.HomeEpisodeListAdapter
 import dev.jdtech.jellyfin.adapters.ViewItemListAdapter
 import dev.jdtech.jellyfin.databinding.FragmentFavoriteBinding
 import dev.jdtech.jellyfin.dialogs.ErrorDialogFragment
+import dev.jdtech.jellyfin.utils.RouteUtils
 import dev.jdtech.jellyfin.utils.checkIfLoginRequired
 import org.jellyfin.sdk.model.api.BaseItemDto
 
@@ -58,7 +59,10 @@ class FavoriteFragment : Fragment() {
         }
 
         binding.errorLayout.errorDetailsButton.setOnClickListener {
-            ErrorDialogFragment(viewModel.error.value ?: getString(R.string.unknown_error)).show(parentFragmentManager, "errordialog")
+            ErrorDialogFragment(viewModel.error.value ?: getString(R.string.unknown_error)).show(
+                parentFragmentManager,
+                "errordialog"
+            )
         }
 
         viewModel.favoriteSections.observe(viewLifecycleOwner, { sections ->
@@ -73,13 +77,7 @@ class FavoriteFragment : Fragment() {
     }
 
     private fun navigateToMediaInfoFragment(item: BaseItemDto) {
-        findNavController().navigate(
-            FavoriteFragmentDirections.actionFavoriteFragmentToMediaInfoFragment(
-                item.id,
-                item.name,
-                item.type ?: "Unknown"
-            )
-        )
+        RouteUtils.navigateToVideoPage(this, item)
     }
 
     private fun navigateToEpisodeBottomSheetFragment(episode: BaseItemDto) {

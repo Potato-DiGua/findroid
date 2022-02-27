@@ -22,6 +22,7 @@ import dev.jdtech.jellyfin.databinding.ActivityIjkPlayerBinding
 import dev.jdtech.jellyfin.repository.JellyfinRepository
 import dev.jdtech.jellyfin.ui.fragments.mediainfo.MediaInfo
 import dev.jdtech.jellyfin.ui.fragments.mediainfo.MediaInfoViewModel
+import timber.log.Timber
 import javax.inject.Inject
 
 
@@ -87,10 +88,12 @@ class IjkPlayerActivity : AppCompatActivity() {
             itemType = args.itemType
         }
         viewModel.mediaItems.observe(this) {
+            val url = it[0].playbackProperties?.uri.toString()
+            Timber.d("video url=$url")
             binding.videoPlayer.setUp(
-                it[0].playbackProperties?.uri.toString(),
+                url,
                 true,
-                 ""
+                ""
             )
         }
         mediaInfoViewModel.navigateToPlayer.observe(this) {
@@ -140,6 +143,8 @@ class IjkPlayerActivity : AppCompatActivity() {
                     //开始播放了才能旋转和全屏
                     //orientationUtils.setEnable(detailPlayer.isRotateWithSystem());
                     isPlay = true
+                    viewModel.startPlay()
+                    viewModel.pollPosition(binding.videoPlayer)
                 }
 
                 override fun onQuitFullscreen(url: String, vararg objects: Any) {
@@ -152,6 +157,7 @@ class IjkPlayerActivity : AppCompatActivity() {
                 //配合下方的onConfigurationChanged
                 orientationUtils?.isEnable = !lock;
             }.build(detailPlayer)
+        detailPlayer.gsyVideoManager
 
         detailPlayer.fullscreenButton.setOnClickListener {
             //直接横屏
@@ -191,6 +197,7 @@ class IjkPlayerActivity : AppCompatActivity() {
     }
 
     override fun onDestroy() {
+        viewModel.onReleasePlayer(binding.videoPlayer)
         super.onDestroy()
         if (isPlay) {
             binding.videoPlayer.currentPlayer.release()

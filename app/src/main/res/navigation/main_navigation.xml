@@ -270,4 +270,12 @@
             app:argType="string" />
     </activity>
 
+    <action
+        android:id="@+id/action_global_ijkPlayerActivity"
+        app:destination="@id/ijkPlayerActivity" />
+
+    <action
+        android:id="@+id/action_global_mediaInfoFragment"
+        app:destination="@id/mediaInfoFragment" />
+
 </navigation>

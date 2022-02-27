@@ -38,15 +38,22 @@
             app:title="@string/theme"
             app:useSimpleSummaryProvider="true" />
         <SwitchPreference
-            app:defaultValue="false"
+            app:defaultValue="true"
             app:key="show_folder"
             app:title="@string/show_folder" />
     </PreferenceCategory>
 
     <PreferenceCategory app:title="Player">
         <SwitchPreference
+            app:key="ijk_player"
+            app:title="ijkplayer"
+            app:defaultValue="false"
+            app:disableDependentsState="true"
+            app:summary="@string/ijk_player_summary"/>
+        <SwitchPreference
             app:key="mpv_player"
             app:title="@string/mpv_player"
+            app:dependency="ijk_player"
             app:summary="@string/mpv_player_summary"/>
         <SwitchPreference
             app:key="mpv_disable_hwdec"

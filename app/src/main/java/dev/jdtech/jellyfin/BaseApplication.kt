@@ -8,7 +8,14 @@ import timber.log.Timber
 
 @HiltAndroidApp
 class BaseApplication : Application() {
+    companion object {
+        private lateinit var _instance: BaseApplication
+        val INSTANCE
+            get() = _instance
+    }
+
     override fun onCreate() {
+        _instance = this
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
 
         when (sharedPreferences.getString("theme", null)) {

@@ -12,6 +12,7 @@ import dev.jdtech.jellyfin.adapters.ViewItemListAdapter
 import dev.jdtech.jellyfin.adapters.ViewListAdapter
 import dev.jdtech.jellyfin.databinding.FragmentHomeBinding
 import dev.jdtech.jellyfin.dialogs.ErrorDialogFragment
+import dev.jdtech.jellyfin.utils.RouteUtils
 import dev.jdtech.jellyfin.utils.checkIfLoginRequired
 import org.jellyfin.sdk.model.api.BaseItemDto
 
@@ -116,13 +117,7 @@ class HomeFragment : Fragment() {
                 )
             )
         } else {
-            findNavController().navigate(
-                HomeFragmentDirections.actionNavigationHomeToMediaInfoFragment(
-                    item.id,
-                    item.name,
-                    item.type ?: "Unknown"
-                )
-            )
+            RouteUtils.navigateToVideoPage(this, item)
         }
     }
 

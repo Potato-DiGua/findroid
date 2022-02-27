@@ -61,6 +61,7 @@
     <string name="select_subtile_track">选择字幕轨道</string>
     <string name="mpv_player">MPV播放器</string>
     <string name="mpv_player_summary">使用实验性 MPV 播放器播放视频。MPV支持更多的视频、音频和字幕编解码器。</string>
+    <string name="ijk_player_summary">使用ijk播放器播放视频。支持更多的视频、音频和字幕编解码器。</string>
     <string name="force_software_decoding">强制软件解码</string>
     <string name="force_software_decoding_summary">禁用硬件解码并使用软件解码。 如果硬件解码产生奇怪的图像，这可能很有用。</string>
     <string name="show_folder">展示文件夾</string>

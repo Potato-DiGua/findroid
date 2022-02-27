@@ -60,6 +60,7 @@
     <string name="select_subtile_track">Select subtitle track</string>
     <string name="mpv_player">MPV Player</string>
     <string name="mpv_player_summary">Use the experimental MPV Player to play videos. MPV has support for more video, audio and subtitle codecs.</string>
+    <string name="ijk_player_summary">Use the experimental ijkplayer to play videos. ijkplayer has support for more video, audio and subtitle codecs.</string>
     <string name="force_software_decoding">Force software decoding</string>
     <string name="force_software_decoding_summary">Disable hardware decoding and use software decoding. Can be useful if hardware decoding gives weird artifacts.</string>
     <string name="show_folder">Show Folder</string>

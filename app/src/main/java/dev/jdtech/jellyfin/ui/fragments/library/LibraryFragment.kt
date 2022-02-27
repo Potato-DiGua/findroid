@@ -1,5 +1,6 @@
 package dev.jdtech.jellyfin.ui.fragments.library
 
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.*
 import androidx.compose.foundation.Image
@@ -45,6 +46,7 @@ import dev.jdtech.jellyfin.models.ShowType
 import dev.jdtech.jellyfin.models.SortType
 import dev.jdtech.jellyfin.repository.JellyfinRepository
 import dev.jdtech.jellyfin.ui.views.ErrorDialogWithoutBorder
+import dev.jdtech.jellyfin.utils.RouteUtils
 import org.jellyfin.sdk.model.api.BaseItemDto
 import javax.inject.Inject
 import kotlin.math.ceil
@@ -61,6 +63,9 @@ class LibraryFragment : Fragment() {
 
     @Inject
     lateinit var jellyfinRepository: JellyfinRepository
+
+    @Inject
+    lateinit var sp: SharedPreferences
 
     private val sortTypeAlterDialogState = mutableStateOf(false)
 
@@ -106,12 +111,7 @@ class LibraryFragment : Fragment() {
 
     private fun navigateToMediaInfoFragment(item: BaseItemDto) {
         findNavController().navigate(
-//            LibraryFragmentDirections.actionLibraryFragmentToMediaInfoFragment(
-//                item.id,
-//                item.name,
-//                item.type ?: "Unknown"
-//            )
-            LibraryFragmentDirections.actionLibraryFragmentToIjkPlayerActivity(
+            LibraryFragmentDirections.actionLibraryFragmentToMediaInfoFragment(
                 item.id,
                 item.name,
                 item.type ?: "Unknown"
@@ -133,7 +133,7 @@ class LibraryFragment : Fragment() {
         if (item.isFolder == true) {
             navigateToLibraryFragment(item)
         } else {
-            navigateToMediaInfoFragment(item)
+            RouteUtils.navigateToVideoPage(this, item)
         }
     }
 
