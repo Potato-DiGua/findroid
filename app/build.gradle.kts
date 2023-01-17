@@ -29,7 +29,7 @@ android {
     buildToolsVersion = "31.0.0"
 
     defaultConfig {
-        applicationId = "dev.jdtech.jellyfin"
+        applicationId = "dev.potato.jellyfin"
         minSdk = 24
         targetSdk = 31
 

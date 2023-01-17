@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -178,8 +179,10 @@ class MediaInfoFragment : Fragment() {
                         viewModel.preparePlayerItems()
                     }
                 }
-            } else if (args.itemType == "Series") {
+            } else if (args.itemType == "Series" || args.itemType == "Episode") {
                 viewModel.preparePlayerItems()
+            } else {
+                Toast.makeText(context, "暂不支持${args.itemType}", Toast.LENGTH_SHORT).show();
             }
         }
 

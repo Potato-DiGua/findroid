@@ -273,6 +273,27 @@ constructor(private val jellyfinRepository: JellyfinRepository) : ViewModel() {
                     }
                 }
             }
+            "Episode"-> {
+                val episodes = jellyfinRepository.getEpisodes(
+                    series.seriesId!!,
+                    series.seasonId!!,
+                    startItemId = series.id,
+                    fields = listOf(ItemFields.MEDIA_SOURCES)
+                )
+                for (episode in episodes) {
+                    if (episode.mediaSources.isNullOrEmpty()) continue
+                    if (episode.locationType == LocationType.VIRTUAL) continue
+                    playerItems.add(
+                        PlayerItem(
+                            episode.name,
+                            episode.id,
+                            episode.mediaSources?.get(0)?.id!!,
+                            playbackPosition
+                        )
+                    )
+                }
+            }
+
         }
 
         if (playerItems.isEmpty() || playerItems.count() == introsCount) throw Exception("No playable items found")
